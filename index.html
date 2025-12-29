@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEMORIZATION METHOD | NEET 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Default: White Theme */
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-dim: #64748b;
+            --accent-main: #475569; 
+            --border-val: #e2e8f0;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+            --main-font: 'Poppins', sans-serif;
+            
+            /* Deem Mode Variables */
+            --deem-overlay: rgba(0, 0, 0, 0);
+            --deem-brightness: 100%;
+            --deem-contrast: 100%;
+        }
+
+        /* Deem Mode Active */
+        body.deem-mode {
+            --deem-overlay: rgba(0, 0, 0, 0.85);
+            --deem-brightness: 70%;
+            --deem-contrast: 90%;
+        }
+
+        /* 8 CUSTOM THEMES */
+        [data-theme="gray"] { --bg-color: #f1f5f9; --accent-main: #334155; }
+        [data-theme="chocolate"] { --bg-color: #fdfaf8; --text-main: #4d3a2d; --accent-main: #8c6a51; --border-val: #e8dcd3; }
+        [data-theme="black"] { --bg-color: #000000; --card-bg: #111111; --text-main: #ffffff; --text-dim: #a3a3a3; --accent-main: #737373; --border-val: #262626; }
+        [data-theme="sky"] { --bg-color: #e0f2fe; --text-main: #0c4a6e; --accent-main: #0369a1; }
+        [data-theme="pink"] { --bg-color: #fce7f3; --text-main: #831843; --accent-main: #9d174d; }
+        [data-theme="cream"] { --bg-color: #fefce8; --text-main: #713f12; --accent-main: #854d0e; }
+        [data-theme="orange"] { --bg-color: #ffedd5; --text-main: #7c2d12; --accent-main: #9a3412; }
+
+        /* FONT OPTIONS */
+        .font-poppins { --main-font: 'Poppins', sans-serif; }
+        .font-modern { --main-font: 'Plus Jakarta Sans', sans-serif; }
+        .font-serif { --main-font: 'Playfair Display', serif; }
+        .font-mono { --main-font: 'JetBrains Mono', monospace; }
+        .font-student { --main-font: 'Patrick Hand', cursive; }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+            /* This ensures every element uses the chosen font */
+            font-family: var(--main-font) !important; 
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: all 0.4s ease;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Deem Mode Overlay Effect */
+        body.deem-mode::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--deem-overlay);
+            z-index: 9998;
+            pointer-events: none;
+        }
+
+        /* Apply filters for deem mode */
+        body.deem-mode .app-grid,
+        body.deem-mode header {
+            filter: brightness(var(--deem-brightness)) contrast(var(--deem-contrast));
+            transition: filter 0.5s ease;
+        }
+
+        header {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: transparent;
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        .logo h1 { font-size: 0.9rem; font-weight: 800; letter-spacing: 1px; color: var(--accent-main); }
+
+        .neet-box {
+            background: var(--card-bg);
+            border: 1.5px solid var(--accent-main);
+            padding: 8px 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .neet-label { font-size: 0.55rem; font-weight: 800; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 2px; }
+        #neet-timer { font-size: 1.1rem; font-weight: 700; color: var(--accent-main); }
+
+        .toolbar { display: flex; gap: 10px; align-items: center; position: relative; }
+        .icon-btn { 
+            background: var(--card-bg); border: 1.5px solid var(--accent-main); 
+            width: 38px; height: 38px; border-radius: 10px; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; color: var(--accent-main);
+            transition: 0.2s; font-size: 1.1rem; font-weight: 700;
+        }
+        .icon-btn:hover { background: var(--accent-main); color: var(--bg-color); }
+        
+        /* Deem mode button active state */
+        .icon-btn.active {
+            background: var(--accent-main);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .icon-btn.deem-active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .popup-menu {
+            position: absolute; top: 55px; right: 0;
+            background: var(--card-bg); border: 1.5px solid var(--accent-main);
+            padding: 12px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            visibility: hidden; opacity: 0; transform: translateY(-10px);
+            transition: 0.3s; z-index: 1001;
+        }
+        .popup-menu.active { visibility: visible; opacity: 1; transform: translateY(0); }
+        .theme-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .swatch { width: 30px; height: 30px; border-radius: 8px; cursor: pointer; border: 1px solid rgba(0,0,0,0.1); }
+        
+        .font-list { display: flex; flex-direction: column; gap: 5px; min-width: 160px; }
+        .font-option { padding: 8px 12px; cursor: pointer; border-radius: 8px; font-size: 0.9rem; transition: 0.2s; border: 1px solid transparent; }
+        .font-option:hover { background: var(--bg-color); border-color: var(--accent-main); }
+
+        .app-grid {
+            display: grid; grid-template-columns: 1fr 340px;
+            gap: 25px; padding: 20px 5% 40px; max-width: 1300px; margin: 0 auto;
+        }
+
+        /* TIMER BOX */
+        .timer-card {
+            background: var(--card-bg); padding: 60px 30px; border-radius: 35px;
+            text-align: center; box-shadow: var(--shadow); border: 2px solid var(--border-val);
+            position: relative;
+        }
+        .timer-zen-btn { position: absolute; top: 20px; right: 20px; }
+        #phase-label { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; color: var(--accent-main); margin-bottom: 10px; }
+        #timer-display { font-size: 9.5rem; font-weight: 200; margin: 10px 0; letter-spacing: -5px; color: var(--text-main); }
+        .btn-row { margin-top: 30px; display: flex; justify-content: center; gap: 15px; }
+        .start-btn { background: var(--accent-main); color: var(--bg-color); border: none; padding: 18px 50px; border-radius: 20px; font-weight: 800; cursor: pointer; }
+        .reset-btn { background: none; border: 2px solid var(--accent-main); padding: 18px 30px; border-radius: 20px; cursor: pointer; color: var(--accent-main); font-weight: 800; }
+        
+        .time-inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 45px; }
+        .time-inputs input { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--accent-main); background: var(--bg-color); color: inherit; text-align: center; font-weight: 700; outline: none; }
+        .time-inputs label { font-size: 0.65rem; font-weight: 800; color: var(--accent-main); display: block; margin-bottom: 5px; }
+
+        /* TODO SECTION */
+        .todo-card { 
+            background: var(--card-bg); padding: 25px; border-radius: 30px; 
+            box-shadow: var(--shadow); border: 2px solid var(--accent-main); 
+            height: fit-content; display: flex; flex-direction: column; gap: 15px;
+        }
+        .todo-header h3 { font-size: 1.1rem; font-weight: 600; }
+        
+        .todo-input-group { display: flex; gap: 8px; }
+        #todo-input { flex: 1; padding: 12px; border-radius: 12px; border: 1.5px solid var(--border-val); background: var(--bg-color); color: inherit; outline: none; }
+        #todo-add { background: var(--accent-main); color: var(--bg-color); border: none; width: 45px; border-radius: 12px; cursor: pointer; font-size: 1.2rem; }
+
+        .todo-list { display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; }
+        .todo-item { 
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 12px; background: var(--bg-color); border-radius: 12px;
+            border: 1px solid var(--border-val); transition: 0.2s;
+        }
+        .todo-item-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .todo-checkbox { 
+            appearance: none; width: 18px; height: 18px; border: 2px solid var(--accent-main); 
+            border-radius: 5px; cursor: pointer; position: relative; transition: 0.2s;
+        }
+        .todo-checkbox:checked { background: var(--accent-main); }
+        .todo-checkbox:checked::after { content: '✓'; color: var(--bg-color); font-size: 12px; position: absolute; top: -1px; left: 2px; }
+        
+        .todo-text { font-size: 0.95rem; transition: 0.2s; }
+        .todo-item.done .todo-text { text-decoration: line-through; opacity: 0.4; }
+        .remove-task { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1rem; font-weight: 800; }
+
+        /* ZEN MODE */
+        body.zen-mode header, body.zen-mode aside, body.zen-mode .time-inputs, body.zen-mode .btn-row { display: none !important; }
+        body.zen-mode .app-grid { grid-template-columns: 1fr; height: 90vh; align-items: center; }
+        body.zen-mode .timer-card { border: none; background: transparent; box-shadow: none; }
+        body.zen-mode #timer-display { font-size: 18rem; color: var(--accent-main); }
+        .exit-zen-btn { display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; }
+        body.zen-mode .exit-zen-btn { display: block; }
+
+        /* Deem Mode Notice */
+        .deem-notice {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            z-index: 9999;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 900px) { 
+            .app-grid { grid-template-columns: 1fr; } 
+            #timer-display { font-size: 6rem; } 
+            .deem-notice {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+            }
+        }
+        
+        /* Mobile adjustments for deem mode */
+        @media (max-width: 600px) {
+            .toolbar {
+                gap: 5px;
+            }
+            .icon-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body id="app-body">
+
+    <header>
+        <div class="logo"><h1>MEMORIZATION METHOD</h1></div>
+        <div class="neet-box">
+            <p class="neet-label">NEET 2026 COUNTDOWN</p>
+            <div id="neet-timer">000d : 00h : 00m</div>
+        </div>
+        <div class="toolbar">
+            <button class="icon-btn" onclick="togglePopup('fontMenu')" title="Fonts">Aa</button>
+            <button class="icon-btn" onclick="togglePopup('themeMenu')" title="Themes">🎨</button>
+            <button class="icon-btn" id="deem-mode-btn" onclick="toggleDeemMode()" title="Deem Mode (Focus)">🌙</button>
+            <button class="icon-btn" onclick="toggleFS()" title="Fullscreen">⛶</button>
+            
+            <div class="popup-menu" id="fontMenu">
+                <div class="font-list">
+                    <div class="font-option" style="font-family: 'Poppins' !important;" onclick="changeFont('font-poppins')">Poppins</div>
+                    <div class="font-option" style="font-family: 'Plus Jakarta Sans' !important;" onclick="changeFont('font-modern')">Modern Sans</div>
+                    <div class="font-option" style="font-family: 'Playfair Display' !important;" onclick="changeFont('font-serif')">Classic Serif</div>
+                    <div class="font-option" style="font-family: 'JetBrains Mono' !important;" onclick="changeFont('font-mono')">Tech Mono</div>
+                    <div class="font-option" style="font-family: 'Patrick Hand' !important;" onclick="changeFont('font-student')">Student Writing</div>
+                </div>
+            </div>
+
+            <div class="popup-menu" id="themeMenu">
+                <div class="theme-grid">
+                    <div class="swatch" style="background:#ffffff" onclick="setTheme('default')"></div>
+                    <div class="swatch" style="background:#f1f5f9" onclick="setTheme('gray')"></div>
+                    <div class="swatch" style="background:#fdfaf8; border: 1px solid #8c6a51" onclick="setTheme('chocolate')"></div>
+                    <div class="swatch" style="background:#0a0a0a" onclick="setTheme('black')"></div>
+                    <div class="swatch" style="background:#e0f2fe" onclick="setTheme('sky')"></div>
+                    <div class="swatch" style="background:#fce7f3" onclick="setTheme('pink')"></div>
+                    <div class="swatch" style="background:#fefce8" onclick="setTheme('cream')"></div>
+                    <div class="swatch" style="background:#ffedd5" onclick="setTheme('orange')"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-grid">
+        <main>
+            <div class="timer-card" id="timer-box">
+                <button class="icon-btn timer-zen-btn" onclick="toggleZen()" title="Zen Mode">⏱</button>
+                <div id="phase-label">Ready to Focus</div>
+                <div id="timer-display">00:00</div>
+                
+                <div class="btn-row">
+                    <button class="start-btn" id="start-btn">Start Session</button>
+                    <button class="reset-btn" id="reset-btn">Reset</button>
+                </div>
+
+                <div class="time-inputs">
+                    <div><label>RECAP</label><input type="number" id="p1" value="5"></div>
+                    <div><label>ANALYZE</label><input type="number" id="p2" value="15"></div>
+                    <div><label>MEMORIZE</label><input type="number" id="p3" value="20"></div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="todo-card">
+            <div class="todo-header">
+                <h3>Study Targets</h3>
+            </div>
+            <div class="todo-input-group">
+                <input type="text" id="todo-input" placeholder="Add a goal...">
+                <button id="todo-add">+</button>
+            </div>
+            <div id="todo-list" class="todo-list"></div>
+        </aside>
+    </div>
+
+    <button class="start-btn exit-zen-btn" onclick="toggleZen()">Exit Zen Mode</button>
+    
+    <!-- Deem Mode Notice -->
+    <div class="deem-notice" id="deem-notice">
+        Deem Mode Active • Screen Brightness Reduced
+    </div>
+
+    <script>
+        // Initialize from localStorage
+        let isDeemMode = localStorage.getItem('deemMode') === 'true';
+        
+        // Apply deem mode on load if it was active
+        if (isDeemMode) {
+            document.body.classList.add('deem-mode');
+            document.getElementById('deem-mode-btn').classList.add('active', 'deem-active');
+        }
+
+        const targetDate = new Date("May 3, 2026 14:00:00").getTime();
+        function updateCountdown() {
+            const gap = targetDate - new Date().getTime();
+            const d = Math.floor(gap / (1000 * 60 * 60 * 24));
+            const h = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('neet-timer').innerText = `${d}d : ${h}h : ${m}m`;
+        }
+        setInterval(updateCountdown, 1000); updateCountdown();
+
+        function togglePopup(id) {
+            const menu = document.getElementById(id);
+            const isVisible = menu.classList.contains('active');
+            document.querySelectorAll('.popup-menu').forEach(m => m.classList.remove('active'));
+            if (!isVisible) menu.classList.add('active');
+        }
+
+        function changeFont(fontClass) { 
+            document.body.className = fontClass; 
+            document.getElementById('fontMenu').classList.remove('active');
+        }
+        
+        function setTheme(t) { 
+            document.getElementById('app-body').setAttribute('data-theme', t); 
+            document.getElementById('themeMenu').classList.remove('active');
+        }
+        
+        function toggleFS() {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        }
+        
+        function toggleZen() { 
+            document.body.classList.toggle('zen-mode');
+            // Auto-exit deem mode when entering zen mode for better visibility
+            if (document.body.classList.contains('zen-mode') && isDeemMode) {
+                toggleDeemMode(false);
+            }
+        }
+
+        // Deem Mode Functionality
+        function toggleDeemMode(showNotice = true) {
+            const body = document.body;
+            const deemBtn = document.getElementById('deem-mode-btn');
+            const notice = document.getElementById('deem-notice');
+            
+            isDeemMode = !isDeemMode;
+            
+            if (isDeemMode) {
+                body.classList.add('deem-mode');
+                deemBtn.classList.add('active', 'deem-active');
+                deemBtn.title = "Exit Deem Mode (Normal Brightness)";
+                
+                if (showNotice) {
+                    notice.style.display = 'block';
+                    setTimeout(() => {
+                        notice.style.display = 'none';
+                    }, 3000);
+                }
+                
+                // Play gentle sound effect (optional)
+                try {
+                    const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
+                    audio.volume = 0.1;
+                    audio.play().catch(() => {});
+                } catch(e) {}
+                
+            } else {
+                body.classList.remove('deem-mode');
+                deemBtn.classList.remove('active', 'deem-active');
+                deemBtn.title = "Deem Mode (Reduce Brightness for Focus)";
+                
+                if (showNotice) {
+                    notice.textContent = "Deem Mode Off • Normal Brightness";
+                    notice.style.display = 'block';
+                    setTimeout(() => {
+                        notice.style.display = 'none';
+                    }, 2000);
+                }
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('deemMode', isDeemMode);
+        }
+
+        let timerObj;
+        function runPhase(idx) {
+            const phases = ["Phase 1: Recap", "Break (2 min)", "Phase 2: Analysis", "Break (2 min)", "Phase 3: Memorization"];
+            if (idx >= phases.length) {
+                document.getElementById('phase-label').innerText = "Session Complete!";
+                document.getElementById('start-btn').disabled = false;
+                return;
+            }
+            const times = [document.getElementById('p1').value, 2, document.getElementById('p2').value, 2, document.getElementById('p3').value];
+            let secondsLeft = times[idx] * 60;
+            document.getElementById('phase-label').innerText = phases[idx];
+
+            timerObj = setInterval(() => {
+                secondsLeft--;
+                const mm = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
+                const ss = (secondsLeft % 60).toString().padStart(2, '0');
+                document.getElementById('timer-display').innerText = `${mm}:${ss}`;
+                if (secondsLeft <= 0) {
+                    clearInterval(timerObj);
+                    new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
+                    runPhase(idx + 1);
+                }
+            }, 1000);
+        }
+
+        document.getElementById('start-btn').onclick = function() { 
+            this.disabled = true; 
+            runPhase(0); 
+            // Auto-enable deem mode when starting study session (optional)
+            if (!isDeemMode && confirm("Enable Deem Mode for better focus during study?")) {
+                toggleDeemMode(true);
+            }
+        };
+        document.getElementById('reset-btn').onclick = function() {
+            clearInterval(timerObj);
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('timer-display').innerText = "00:00";
+            document.getElementById('phase-label').innerText = "Ready to Focus";
+        };
+
+        // TODO LOGIC
+        document.getElementById('todo-add').onclick = addTask;
+        document.getElementById('todo-input').onkeypress = (e) => { if(e.key === 'Enter') addTask(); };
+
+        function addTask() {
+            const input = document.getElementById('todo-input');
+            if(!input.value.trim()) return;
+
+            const item = document.createElement('div');
+            item.className = 'todo-item';
+            item.innerHTML = `
+                <div class="todo-item-left">
+                    <input type="checkbox" class="todo-checkbox" onchange="toggleTask(this)">
+                    <span class="todo-text">${input.value}</span>
+                </div>
+                <button class="remove-task" onclick="this.parentElement.remove()">✕</button>
+            `;
+            document.getElementById('todo-list').prepend(item);
+            input.value = "";
+        }
+
+        function toggleTask(checkbox) {
+            const item = checkbox.closest('.todo-item');
+            if(checkbox.checked) item.classList.add('done');
+            else item.classList.remove('done');
+        }
+        
+        // Close popups when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.popup-menu') && !e.target.closest('.icon-btn') || 
+                e.target.classList.contains('font-option') || 
+                e.target.classList.contains('swatch')) {
+                document.querySelectorAll('.popup-menu').forEach(m => m.classList.remove('active'));
+            }
+        });
+        
+        // Keyboard shortcut for deem mode (Ctrl+Shift+D)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                e.preventDefault();
+                toggleDeemMode(true);
+            }
+        });
+    </script>
+</body>
+</html>
